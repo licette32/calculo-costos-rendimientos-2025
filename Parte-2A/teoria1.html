@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conceptos Fundamentales de Costos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* ---------- Variables CSS Mejoradas ---------- */
+    :root {
+      --bg-primary: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f8fafc;
+      --bg-card: #ffffff;
+      --text-primary: #1a1a1a;
+      --text-secondary: #4a5568;
+      --text-light: #2d3748;
+      --accent-primary: #16a34a; /* Verde brillante */
+      --accent-secondary: #059669; /* Verde esmeralda */
+      --accent-gradient: linear-gradient(135deg, #16a34a 0%, #059669 100%);
+      --border-color: rgba(0, 0, 0, 0.1);
+      --shadow-card: 0 10px 20px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.12);
+      --shadow-glow: 0 0 20px rgba(22, 163, 74, 0.3);
+      --border-radius: 16px;
+      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+      --bg-secondary: #064e3b;
+      --bg-tertiary: #022c22;
+      --bg-card: #065f46;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-light: #e2e8f0;
+      --accent-primary: #34d399; /* Verde menta */
+      --accent-secondary: #4ade80; /* Verde lima */
+      --accent-gradient: linear-gradient(135deg, #34d399 0%, #4ade80 100%);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.3);
+    }
+
+
+    /* ---------- Reset y Base ---------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.7;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: var(--transition);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ---------- Efectos de Fondo Animados ---------- */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(44, 119, 68, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(90, 63, 55, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(44, 119, 68, 0.05) 0%, transparent 50%);
+      animation: backgroundShift 20s ease-in-out infinite;
+      z-index: -1;
+    }
+    @keyframes backgroundShift { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+
+    /* ---------- Partículas Flotantes ---------- */
+    .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+    .particle { position: absolute; width: 4px; height: 4px; background: var(--accent-primary); border-radius: 50%; animation: float 15s infinite linear; opacity: 0.3; }
+    @keyframes float { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.3; } 90% { opacity: 0.3; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; position: relative; z-index: 1; }
+
+    /* ---------- Cabecera Mejorada ---------- */
+    .header { text-align: center; margin-bottom: 3rem; position: relative; }
+    .main-title {
+      font-size: clamp(2.5rem, 6vw, 3.8rem);
+      font-weight: 800;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      position: relative;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes titleGlow { 0% { filter: drop-shadow(0 0 10px rgba(44, 119, 68, 0.3)); } 100% { filter: drop-shadow(0 0 20px rgba(90, 63, 55, 0.5)); } }
+    .subtitle { font-size: 1.2rem; color: var(--text-light); font-weight: 400; opacity: 0.9; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+
+    /* ---------- Botón de Tema Mejorado ---------- */
+    .theme-toggle {
+      position: fixed; top: 2rem; right: 2rem; width: 60px; height: 60px;
+      border: none; border-radius: 50%; background: var(--bg-secondary);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px); box-shadow: var(--shadow-card);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; color: var(--accent-primary); transition: var(--transition);
+      z-index: 1000; border: 2px solid var(--border-color);
+    }
+    .theme-toggle:hover { transform: scale(1.1) rotate(180deg); box-shadow: var(--shadow-hover), var(--shadow-glow); }
+
+    /* ---------- Tarjetas de Sección Mejoradas ---------- */
+    .section-card {
+      background: var(--bg-secondary); 
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border-radius: var(--border-radius); margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-card); border: 1px solid var(--border-color);
+      overflow: hidden; transition: var(--transition); position: relative;
+    }
+    .section-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent-gradient); transform: scaleX(0); transition: var(--transition);
+    }
+    .section-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-8px); }
+    .section-card:hover::before { transform: scaleX(1); }
+
+    .section-header {
+      background: none; border: none; width: 100%; padding: 1.5rem 2rem;
+      text-align: left; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      font-size: 1.2rem; font-weight: 600; color: var(--text-primary); transition: var(--transition);
+    }
+    .section-header:hover { background: var(--bg-card); }
+    .section-title { display: flex; align-items: center; gap: 1rem; }
+    .section-icon {
+      background: var(--accent-gradient); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem;
+      width: 28px; text-align: center; transition: var(--transition);
+    }
+    .section-header:hover .section-icon { transform: scale(1.2) rotate(5deg); }
+    .expand-icon { color: var(--text-secondary); transition: var(--transition); font-size: 1.1rem; }
+    .section-header[aria-expanded="true"] .expand-icon { transform: rotate(180deg); color: var(--accent-primary); }
+
+    .section-content {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+      background: var(--bg-tertiary); font-size: 1rem; opacity: 0;
+    }
+    .section-content.expanded {
+      max-height: 1200px; padding: 1rem 2rem 2rem 2rem;
+      border-top: 1px solid var(--border-color); opacity: 1;
+    }
+    .section-content ul { padding-left: calc(28px + 1rem + 1rem); list-style: none; }
+    .section-content li { position: relative; padding-left: 1.5rem; margin-bottom: 0.8rem; color: var(--text-primary); transition: var(--transition); }
+    .section-content li::before {
+      content: '▶'; position: absolute; left: 0; color: var(--accent-primary);
+      font-size: 0.8rem; transition: var(--transition);
+    }
+    .section-content li:hover { color: var(--accent-primary); transform: translateX(5px); }
+    .section-content li:hover::before { transform: scale(1.2); }
+    .section-content ul ul { margin-top: 0.8rem; padding-left: 2rem; }
+    .section-content ul ul li::before { content: '◆'; color: var(--accent-secondary); }
+
+    /* ---------- Animaciones de Entrada y Responsive ---------- */
+    .section-card { animation: slideInUp 0.6s ease-out forwards; opacity: 0; transform: translateY(30px); }
+    .section-card:nth-child(1) { animation-delay: 0.1s; } .section-card:nth-child(2) { animation-delay: 0.2s; }
+    .section-card:nth-child(3) { animation-delay: 0.3s; } .section-card:nth-child(4) { animation-delay: 0.4s; }
+    .section-card:nth-child(5) { animation-delay: 0.5s; } .section-card:nth-child(6) { animation-delay: 0.6s; }
+    .section-card:nth-child(7) { animation-delay: 0.7s; }
+    @keyframes slideInUp { to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 768px) {
+      .container { padding: 1rem 0.5rem; }
+      .theme-toggle { top: 1rem; right: 1rem; width: 50px; height: 50px; }
+      .section-header { padding: 1.2rem 1.5rem; font-size: 1.1rem; }
+      .section-content.expanded { padding: 0.8rem 1.5rem 1.5rem 1.5rem; }
+      .main-title { font-size: clamp(2rem, 8vw, 3rem); }
+    }
+    .header { animation: fadeInDown 1s ease-out; }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+    .section-header:focus, .theme-toggle:focus { outline: 2px solid var(--accent-primary); outline-offset: 4px; }
+  </style>
+</head>
+<body>
+  <!-- Partículas animadas -->
+  <div class="particles" id="particles"></div>
+
+  <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema">
+    <i class="fas fa-moon" id="theme-icon"></i>
+  </button>
+
+  <div class="container">
+    <header class="header">
+      <h1 class="main-title">Conceptos Fundamentales de Costos</h1>
+      <p class="subtitle">Material educativo sobre elementos del costo de producción</p>
+    </header>
+
+    <!-- 1. Definición de Costos -->
+    <div class="section-card">
+      <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
+        <div class="section-title"><i class="fas fa-book section-icon"></i>Definición de Costos</div>
+        <i class="fas fa-chevron-down expand-icon"></i>
+      </button>
+      <div class="section-content">
+        <ul>
+          <li>El <em>costo</em> es el sacrificio económico o la contraprestación que se realiza para producir un bien, prestar un servicio o alcanzar un objetivo específico.</li>
+          <li>Se trata del valor de los recursos escasos que se entregan, se transforman o se consumen en un proceso.</li>
+          <li>La idea fundamental es que, debido a que los recursos son limitados, nada es gratuito; siempre hay un "esfuerzo" o "sacrificio" medible para obtener algo.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. Elementos del Costo de Producción -->
+    <div class="section-card">
+        <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
+            <div class="section-title"><i class="fas fa-industry section-icon"></i>Elementos del Costo de Producción</div>
+            <i class="fas fa-chevron-down expand-icon"></i>
+        </button>
+        <div class="section-content">
+            <ul>
+                <li>
+                  El costo total de fabricar un producto se compone tradicionalmente de tres elementos esenciales:
+                  <ul>
+                      <li><strong>Materia Prima (MP)</strong>: Elementos o insumos que intervienen en un proceso de fabricación.</li>
+                      <li><strong>Mano de Obra (MO)</strong>: Esfuerzo humano, tanto físico como mental, que interviene en la transformación.</li>
+                      <li><strong>Costos Indirectos de Fabricación (CIF)</strong>: Todos los costos necesarios para la producción que no son ni MP ni MO directos.</li>
+                  </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 3. Materia Prima -->
+    <div class="section-card">
+        <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
+            <div class="section-title"><i class="fas fa-box-open section-icon"></i>Materia Prima</div>
+            <i class="fas fa-chevron-down expand-icon"></i>
+        </button>
+        <div class="section-content">
+            <ul>
+                <li>Son los elementos o insumos que intervienen en un proceso de fabricación.</li>
+                <li>Se transforman en otro producto por la acción que ejerce la mano de obra (MO) y los costos indirectos de fabricación (CIF).</li>
+                <li><strong>Materia Prima Directa (MPD)</strong>: Se puede identificar y cuantificar fácilmente en cada unidad del producto terminado (ej., la madera en una silla).</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 4. Mano de Obra -->
+    <div class="section-card">
+        <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
+            <div class="section-title"><i class="fas fa-users section-icon"></i>Mano de Obra</div>
+            <i class="fas fa-chevron-down expand-icon"></i>
+        </button>
+        <div class="section-content">
+            <ul>
+                <li>Es el esfuerzo humano, tanto físico como mental, que interviene en la transformación de la materia prima.</li>
+                <li><strong>Mano de Obra Directa (MOD)</strong>: Es el trabajo de los operarios que se puede relacionar directamente con la fabricación de una unidad específica (ej., el tiempo del carpintero que ensambla la silla).</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 5. Costos Indirectos de Fabricación -->
+    <div class="section-card">
+        <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
+            <div class="section-title"><i class="fas fa-tools section-icon"></i>Costos Indirectos de Fabricación (CIF)</div>
+            <i class="fas fa-chevron-down expand-icon"></i>
+        </button>
+        <div class="section-content">
+            <ul>
+                <li>Son todos los costos necesarios para la producción que no son ni materia prima directa ni mano de obra directa.</li>
+                <li>No se pueden asignar de forma exacta a una sola unidad.</li>
+                <li>Incluyen:
+                  <ul>
+                    <li>La Materia Prima Indirecta (ej., el pegamento para la silla).</li>
+                    <li>La Mano de Obra Indirecta (ej., el sueldo del supervisor de la fábrica).</li>
+                    <li>Otros costos como la energía eléctrica de las máquinas, el alquiler de la fábrica o la depreciación del equipo.</li>
+                  </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 6. Cálculo de Costos con Merma -->
+    <div class="section-card">
+        <button class="section-header" onclick="toggleSection(this)" aria-expanded="false">
+            <div class="section-title"><i class="fas fa-calculator section-icon"></i>Cálculo de Costos con Merma</div>
+            <i class="fas fa-chevron-down expand-icon"></i>
+        </button>
+        <div class="section-content">
+            <ul>
+                <li>Este notebook contiene las funciones y soluciones para los ejercicios de cálculo de costos de materia prima, ajustados por merma.</li>
+                <li>La merma representa la pérdida de material durante el proceso de producción.</li>
+                <li>Es fundamental calcular correctamente la merma para determinar el costo real de los productos.</li>
+            </ul>
+        </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Crear partículas flotantes
+    function createParticles() {
+      const particleContainer = document.getElementById('particles');
+      if (!particleContainer) return;
+      const particleCount = 20;
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+        particleContainer.appendChild(particle);
+      }
+    }
+
+    // Función para desplegar/colapsar secciones del acordeón
+    function toggleSection(buttonEl) {
+      const content = buttonEl.nextElementSibling;
+      const isExpanded = buttonEl.getAttribute('aria-expanded') === 'true';
+      // Cerrar todas las otras secciones para que solo una esté abierta a la vez
+      document.querySelectorAll('.section-header').forEach(header => {
+        if (header !== buttonEl) {
+          header.setAttribute('aria-expanded', 'false');
+          header.nextElementSibling.classList.remove('expanded');
+        }
+      });
+      // Abrir o cerrar la sección actual
+      buttonEl.setAttribute('aria-expanded', !isExpanded);
+      content.classList.toggle('expanded');
+    }
+
+    // Función para cambiar el tema (claro/oscuro)
+    function toggleTheme() {
+      const body = document.body;
+      const icon = document.getElementById('theme-icon');
+      if (body.getAttribute('data-theme') === 'dark') {
+        body.removeAttribute('data-theme');
+        icon.className = 'fas fa-moon';
+      } else {
+        body.setAttribute('data-theme', 'dark');
+        icon.className = 'fas fa-sun';
+      }
+    }
+
+    // Código que se ejecuta cuando el contenido de la página ha cargado
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      // Abrir la primera sección por defecto
+      const firstHeader = document.querySelector('.section-header');
+      if (firstHeader) {
+        firstHeader.click(); // Usamos .click() para que se ejecute la lógica de cierre de otros
+      }
+    });
+  </script>
+</body>
+</html>
