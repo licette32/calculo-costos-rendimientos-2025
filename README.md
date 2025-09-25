@@ -1,7 +1,7 @@
 # 📊 Cálculo de Costos y Rendimiento 2025
 
-Este repositorio reúne material de estudio, ejercicios prácticos y soluciones en **Python** para la materia **Cálculo de Costos y Rendimientos**.  
-El objetivo es aplicar conceptos de **contabilidad de costos** mediante programación y visualización de datos.
+Este repositorio reúne material de estudio, ejercicios prácticos y soluciones en Python inspirados en la materia Cálculo de Costos y Rendimientos.
+No corresponde a material oficial de ninguna cátedra, sino a una iniciativa personal para trasladar conceptos de contabilidad de costos a código, explorando programación, análisis de datos y visualización interactiva.
 
 ---
 
